@@ -29,7 +29,7 @@ std::string manageNegativeNumbers(std::string expression) {
 	}
 	std::reverse(exp.begin(), exp.end());
 	std::string stringSt;
-	std::vector<std::string> postFix;
+	std::vector<std::string> inFix;
 	for (int i = 0; i < (int)exp.size(); ++i) {
 		while (std::isdigit(exp.at(i)) || exp.at(i) == '.') {
 			stringSt += exp.at(i);
@@ -39,36 +39,36 @@ std::string manageNegativeNumbers(std::string expression) {
 			}
 		}
 		if (!stringSt.empty()) {
-			postFix.push_back(stringSt);
+			inFix.push_back(stringSt);
 			stringSt.erase(stringSt.begin(), stringSt.end());
 		}
 		if (i == (int)exp.size()) {
 			break;
 		}
-		postFix.push_back(std::string(1, exp.at(i)));
+		inFix.push_back(std::string(1, exp.at(i)));
 	}
-	for (int i = 0; i < (int)postFix.size(); ++i) {
-		if (postFix.at(i) == " ") {
-			postFix.at(i) = "(";
-			for (int j = i + 1; j < (int)postFix.size(); ++j) {
-				if (postFix.at(j).at(0) == '(') {
-					while (postFix.at(j).at(0) != ')') {
+	for (int i = 0; i < (int)inFix.size(); ++i) {
+		if (inFix.at(i) == " ") {
+			inFix.at(i) = "(";
+			for (int j = i + 1; j < (int)inFix.size(); ++j) {
+				if (inFix.at(j).at(0) == '(') {
+					while (inFix.at(j).at(0) != ')') {
 						++j;
 					}
-					if (j < (int)postFix.size() - 1) {
-						postFix.insert((postFix.begin() + (j + 1)), std::string(1, ')'));
+					if (j < (int)inFix.size() - 1) {
+						inFix.insert((inFix.begin() + (j + 1)), std::string(1, ')'));
 					}
 					else {
-						postFix.push_back(std::string(1, ')'));
+						inFix.push_back(std::string(1, ')'));
 					}
 					break;
 				}
-				if (std::isdigit(postFix.at(j).at(0)) && postFix.at(j).at(0) != '0') {
-					if (j < (int)postFix.size() - 1) {
-						postFix.insert((postFix.begin() + (j + 1)), std::string(1, ')'));
+				if (std::isdigit(inFix.at(j).at(0)) && inFix.at(j).at(0) != '0') {
+					if (j < (int)inFix.size() - 1) {
+						inFix.insert((inFix.begin() + (j + 1)), std::string(1, ')'));
 					}
 					else {
-						postFix.push_back(std::string(1, ')'));
+						inFix.push_back(std::string(1, ')'));
 					}
 					break;
 				}
@@ -76,7 +76,7 @@ std::string manageNegativeNumbers(std::string expression) {
 		}
 	}
 	stringSt.erase(stringSt.begin(), stringSt.end());
-	for (auto& c : postFix) {
+	for (auto& c : inFix) {
 		stringSt += c;
 	}
 	return stringSt;
