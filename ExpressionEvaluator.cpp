@@ -1,7 +1,7 @@
 #include <stack>
 #include <string>
-#include <iostream>
 #include <sstream>
+#include <iostream>
 #include <iomanip>
 #include <unordered_map>
 
@@ -79,7 +79,7 @@ std::string manageNegativeNumbers(std::string expression) {
 	}
 	stringSt.erase(stringSt.begin(), stringSt.end());
 	std::stack<std::string> ok;
-	for (int i = 0; i < inFix.size(); ++i) {
+	for (int i = 0; i < (int)inFix.size(); ++i) {
 		if (!ok.empty()) {
 			if (ok.top() == ")" && inFix.at(i) == "(") {
 				ok.push(std::string(1, '+'));
@@ -98,18 +98,18 @@ std::string manageNegativeNumbers(std::string expression) {
 	}
 	return stringSt;
 }
-double calc(std::string expression) {
+long double calc(std::string expression) {
 
 	std::unordered_map <char, int> opMap = { {'+', 1},{'-', 1},{'*', 2},{'/', 2} };
 	std::string stringSt;
 	std::stack<std::string> stack;
 	std::deque<std::string> postFix;
 	std::ostringstream streamObj;
-	streamObj << std::fixed;
-	streamObj << std::setprecision(100);
+	streamObj << std::scientific;
+	streamObj << std::setprecision(10);
 
 	expression = manageNegativeNumbers(expression);
-	for (int i = 0; i < (int) expression.size(); ++i) {
+	for (int i = 0; i < (int)expression.size(); ++i) {
 		while (std::isdigit(expression.at(i)) || expression.at(i) == '.') {
 			stringSt += expression.at(i);
 			++i;
@@ -159,19 +159,25 @@ double calc(std::string expression) {
 		}
 	}
 	while (!stack.empty()) {
-		postFix.push_back(stack.top());//<-------
+		postFix.push_back(stack.top());
 		stack.pop();
-	}//end conversion into postfix
+	}
 	long double a = 0; long double b = 0; long double c = 0;
 	while (!postFix.empty()) {
 		if (!std::ispunct(postFix.front().at(0))) {
 			stack.push(postFix.front());
 		}
 		else {
-			a = std::stold(stack.top());
+
+			streamObj << std::scientific << stack.top();
 			stack.pop();
-			b = std::stold(stack.top());
+			a = std::stold(streamObj.str());
+			streamObj.str("");
+			streamObj << std::scientific << stack.top();
 			stack.pop();
+			b = std::stold(streamObj.str());
+			streamObj.str("");
+
 			switch (postFix.front().at(0)) {
 			case '+':
 				c = b + a;
@@ -194,7 +200,9 @@ double calc(std::string expression) {
 		}
 		postFix.pop_front();
 	}
-	return std::stod(stack.top());
+	streamObj << std::scientific << stack.top();
+	c = stold(streamObj.str());
+	return c;
 }
 int main() {
 
