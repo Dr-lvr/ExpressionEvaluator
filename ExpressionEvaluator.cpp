@@ -78,12 +78,8 @@ std::string manageNegativeNumbers(std::string expression) {
 		}
 	}
 	stringSt.erase(stringSt.begin(), stringSt.end());
-	/*for (auto& c : inFix) {
-		stringSt += c;
-	}*/
 	std::stack<std::string> ok;
 	for (int i = 0; i < inFix.size(); ++i) {
-		std::cout << inFix.at(i);
 		if (!ok.empty()) {
 			if (ok.top() == ")" && inFix.at(i) == "(") {
 				ok.push(std::string(1, '+'));
@@ -91,18 +87,12 @@ std::string manageNegativeNumbers(std::string expression) {
 		}
 		ok.push(inFix.at(i));
 	}
-	std::cout << std::endl;
-	std::cout << std::endl;
 	inFix.erase(inFix.begin(), inFix.end());
 	while (!ok.empty()) {
 		inFix.push_back(ok.top());
 		ok.pop();
 	}
 	std::reverse(inFix.begin(), inFix.end());
-	for (auto& c : inFix) {
-		std::cout << c;
-	}
-	std::cout<<std::endl;
 	for (auto& c : inFix) {
 		stringSt += c;
 	}
