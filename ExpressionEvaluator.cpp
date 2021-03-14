@@ -168,11 +168,17 @@ double calc(std::string expression) {
 			stack.push(postFix.front());
 		}
 		else {
-			streamObj << std::setprecision(std::numeric_limits<long double>::max_digits10) << stack.top();
+			streamObj
+				//<< std::scientific
+				<< std::setprecision(10)
+				<< stack.top();
 			stack.pop();
 			streamObj >> a;
 			streamObj.clear();
-			streamObj << std::setprecision(std::numeric_limits<long double>::max_digits10) << stack.top();
+			streamObj
+				//<< std::scientific
+				<< std::setprecision(10)
+				<< stack.top();
 			stack.pop();
 			streamObj >> b;
 			streamObj.clear();
@@ -192,20 +198,26 @@ double calc(std::string expression) {
 			default:
 				break;
 			}
-			streamObj << std::setprecision(std::numeric_limits<long double>::max_digits10) << c;
+			streamObj
+				//<< std::scientific
+				<< std::setprecision(10)
+				<< c;
 			streamObj >> st;
 			stack.push(st);
 			streamObj.clear();
 		}
 		postFix.pop_front();
 	}
-	streamObj << std::setprecision(std::numeric_limits<long double>::max_digits10) << stack.top();
+	streamObj
+		//<< std::scientific
+		<< std::setprecision(10)
+		<< stack.top();
 	streamObj >> c;
 	return c;
 }
 int main() {
 
-	std::cout << std::setprecision(std::numeric_limits<long double>::max_digits10)<< 
+	std::cout << std::setprecision(std::numeric_limits<double>::max_digits10)<< 
 		calc("(91.62+81.06*67.01)*-80.36*17.78+-29.13/((96.68-47.52+((59.91)/(14.82/(72.29+53.25))-42.83)*--50.08+--27.91*44.31+-38.52-3.1*49.28*-(69.01)-6.78/(75.18/(91.89))/(-(40.03))-(-77.49-62.22))-95.66/(-8.05/(6.47))+44.43*((61.86)--43.97+91.32+34.92+86.83+95.86*87.69+(13.36/(-74.02+77.65))+(60.97)/((42.12)+74.91))*4.4+29.84/(47.06))") << std::endl;
 	//std::cout << calc("(91.62+81.06*67.01)*-80.36*17.78+-29.13/((96.68-47.52+((59.91)/(14.82/(72.29+53.25))-42.83)*--50.08+--27.91*44.31+-38.52-3.1*49.28*-(69.01)-6.78/(75.18/(91.89))/(-(40.03))-(-77.49-62.22))-95.66/(-8.05/(6.47))+44.43*((61.86)--43.97+91.32+34.92+86.83+95.86*87.69+(13.36/(-74.02+77.65))+(60.97)/((42.12)+74.91))*4.4+29.84/(47.06))") << std::endl;
 	/*
