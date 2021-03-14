@@ -88,10 +88,11 @@ double calc(std::string expression) {
 	std::string stringSt;
 	std::stack<std::string> stack;
 	std::deque<std::string> postFix;
+	std::unordered_map <char, int> opMap = { {'+', 1},{'-', 1},{'*', 2},{'/', 2} };
 	std::ostringstream streamObj;
 	streamObj << std::fixed;
 	streamObj << std::setprecision(10);
-	std::unordered_map <char, int> opMap = { {'+', 1},{'-', 1},{'*', 2},{'/', 2} };
+
 	expression = manageNegativeNumbers(expression);
 	for (int i = 0; i < (int) expression.size(); ++i) {
 		while (std::isdigit(expression.at(i)) || expression.at(i) == '.') {
@@ -146,15 +147,15 @@ double calc(std::string expression) {
 		postFix.push_back(stack.top());//<-------
 		stack.pop();
 	}//end conversion into postfix
-	double a = 0; double b = 0; double c = 0;
+	long double a = 0; long double b = 0; long double c = 0;
 	while (!postFix.empty()) {
 		if (!std::ispunct(postFix.front().at(0))) {
 			stack.push(postFix.front());
 		}
 		else {
-			a = std::stod(stack.top());
+			a = std::stold(stack.top());
 			stack.pop();
-			b = std::stod(stack.top());
+			b = std::stold(stack.top());
 			stack.pop();
 			switch (postFix.front().at(0)) {
 			case '+':
@@ -184,7 +185,7 @@ int main() {
 	std::cout << "prima operazione --- scritta correttamente ---> (0-7) * (0-(6 / 3)): " << std::endl;
 	std::cout << calc("(0-7) * (0-(6 / 3))") <<std::endl;
 	std::cout << "seconda operazione --- equivalente ---> -7 * -(6 / 3)" << std::endl;
-	std::cout << calc("-7 * -(6 / 3)");
+	std::cout << calc("-7 * -(6 / 3)") << std::endl;
 	std::cout << "must be -7891910.63605 . . . " << std::endl;
 	std::cout << calc("(91.62+81.06*67.01)*-80.36*17.78+-29.13/((96.68-47.52+((59.91)/(14.82/(72.29+53.25))-42.83)*--50.08+--27.91*44.31+-38.52-3.1*49.28*-(69.01)-6.78/(75.18/(91.89))/(-(40.03))-(-77.49-62.22))-95.66/(-8.05/(6.47))+44.43*((61.86)--43.97+91.32+34.92+86.83+95.86*87.69+(13.36/(-74.02+77.65))+(60.97)/((42.12)+74.91))*4.4+29.84/(47.06))");
 	std::cin.ignore();
