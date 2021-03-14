@@ -106,10 +106,9 @@ double calc(std::string expression) {
 	std::deque<std::string> postFix;
 	std::ostringstream streamObj;
 	streamObj << std::fixed;
-	streamObj << std::setprecision(10);
+	streamObj << std::setprecision(100);
 
 	expression = manageNegativeNumbers(expression);
-	//return 0;
 	for (int i = 0; i < (int) expression.size(); ++i) {
 		while (std::isdigit(expression.at(i)) || expression.at(i) == '.') {
 			stringSt += expression.at(i);
