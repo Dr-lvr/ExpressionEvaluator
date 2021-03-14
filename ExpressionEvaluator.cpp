@@ -19,7 +19,9 @@ std::string manageNegativeNumbers(std::string expression) {
 				}
 			}
 		}
-		if (c != ' ') stack.push(c);
+		if (c != ' ') {
+			stack.push(c);
+		}
 	}
 	while (!stack.empty()) {
 		exp.push_back(stack.top());
@@ -32,13 +34,17 @@ std::string manageNegativeNumbers(std::string expression) {
 		while (std::isdigit(exp.at(i)) || exp.at(i) == '.') {
 			stringSt += exp.at(i);
 			++i;
-			if (i == exp.size()) break;
+			if (i == (int)exp.size()) {
+				break;
+			}
 		}
 		if (!stringSt.empty()) {
 			postFix.push_back(stringSt);
 			stringSt.erase(stringSt.begin(), stringSt.end());
 		}
-		if (i == exp.size()) break;
+		if (i == (int)exp.size()) {
+			break;
+		}
 		postFix.push_back(std::string(1, exp.at(i)));
 	}
 	for (int i = 0; i < (int)postFix.size(); ++i) {
@@ -49,8 +55,8 @@ std::string manageNegativeNumbers(std::string expression) {
 					while (postFix.at(j).at(0) != ')') {
 						++j;
 					}
-					if (j < postFix.size() - 1) {
-						postFix.insert(postFix.begin() + (j + 1), std::string(1, ')'));
+					if (j < (int)postFix.size() - 1) {
+						postFix.insert((postFix.begin() + (j + 1)), std::string(1, ')'));
 					}
 					else {
 						postFix.push_back(std::string(1, ')'));
@@ -58,8 +64,8 @@ std::string manageNegativeNumbers(std::string expression) {
 					break;
 				}
 				if (std::isdigit(postFix.at(j).at(0)) && postFix.at(j).at(0) != '0') {
-					if (j < postFix.size() - 1) {
-						postFix.insert(postFix.begin() + (j + 1), std::string(1, ')'));
+					if (j < (int)postFix.size() - 1) {
+						postFix.insert((postFix.begin() + (j + 1)), std::string(1, ')'));
 					}
 					else {
 						postFix.push_back(std::string(1, ')'));
@@ -86,13 +92,17 @@ double calc(std::string expression) {
 		while (std::isdigit(expression.at(i)) || expression.at(i) == '.') {
 			stringSt += expression.at(i);
 			++i;
-			if (i == (int) expression.size()) break;
+			if (i == (int)expression.size()) {
+				break;
+			}
 		}
 		if (!stringSt.empty()) {
 			postFix.push_back(stringSt);
 			stringSt.erase(stringSt.begin(), stringSt.end());
 		}
-		if (i == (int) expression.size()) break;//end operand found
+		if (i == (int)expression.size()) {
+			break;//end operand found
+		}
 		switch (expression.at(i)) {
 		case '(':
 			stack.push("(");
