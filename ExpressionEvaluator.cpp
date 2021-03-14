@@ -19,9 +19,7 @@ std::string manageNegativeNumbers(std::string expression) {
 				}
 			}
 		}
-		if (c != ' ') {
-			stack.push(c);
-		}
+		if (c != ' ') stack.push(c);
 	}
 	while (!stack.empty()) {
 		exp.push_back(stack.top());
@@ -35,18 +33,14 @@ std::string manageNegativeNumbers(std::string expression) {
 			while (std::isdigit(exp.at(i))) {
 				stringSt += exp.at(i);
 				++i;
-				if (i == exp.size()) {
-					break;
-				}
+				if (i == exp.size()) break;
 			}
 			if (!stringSt.empty()) {
 				postFix.push_back(stringSt);
 				stringSt.erase(stringSt.begin(), stringSt.end());
 			}
 		}
-		if (i == exp.size()) {
-			break;
-		}
+		if (i == exp.size()) break;
 		postFix.push_back(std::string(1, exp.at(i)));
 	}
 	for (size_t i = 0; i < postFix.size(); ++i) {
@@ -57,38 +51,32 @@ std::string manageNegativeNumbers(std::string expression) {
 					while (postFix.at(j).at(0) != ')') {
 						++j;
 					}
-					if (j < postFix.size() - 1) {
-						postFix.insert(postFix.begin() + (j + 1), std::string(1, ')'));
-					}
-					else {
-						postFix.push_back(std::string(1, ')'));
-					}
+					if (j < postFix.size() - 1) postFix.insert(postFix.begin() + (j + 1), std::string(1, ')'));
+					else postFix.push_back(std::string(1, ')'));
 					break;
 				}
 				if (std::isdigit(postFix.at(j).at(0)) && postFix.at(j).at(0) != '0') {
-					if (j < postFix.size()-1) {
-						postFix.insert(postFix.begin() + (j+1), std::string(1, ')'));
-					}
-					else {
-						postFix.push_back(std::string(1, ')'));
-					}
+					if (j < postFix.size()-1) postFix.insert(postFix.begin() + (j+1), std::string(1, ')'));
+					else postFix.push_back(std::string(1, ')'));
 					break;
 				}
 			}
 		}
 	}
+	//------------------------------
 	for (auto& c : postFix) {
 		std::cout << c;
 	}
 	std::cout << std::endl;
+	//---------------------------------
 	return exp;
 }
 double calc(std::string expression) {
 
-	expression = manageNegativeNumbers(expression);
 	std::string stringSt;
 	std::stack<std::string> stack;
 	std::deque<std::string> postFix;
+	expression = manageNegativeNumbers(expression);
 	std::unordered_map <char, int> opMap = { {'+', 1},{'-', 1},{'*', 2},{'/', 2} };
 	for (size_t i = 0; i < expression.size(); ++i) {
 		while (std::isdigit(expression.at(i))) {
@@ -111,7 +99,7 @@ double calc(std::string expression) {
 			break;
 		case ')':
 			while (!stack.empty() && stack.top() != "(") {
-				postFix.push_back(stack.top());//<-------
+				postFix.push_back(stack.top());
 				stack.pop();
 			}
 			stack.pop();
@@ -126,7 +114,7 @@ double calc(std::string expression) {
 			else {
 				while (!stack.empty() && stack.top() != "(" &&
 					opMap[expression.at(i)] <= opMap[stack.top().at(0)]) {
-					postFix.push_back(stack.top()); //<-------
+					postFix.push_back(stack.top());
 					stack.pop();
 				}
 				if (expression.at(i) == '+') stack.push("+");
@@ -143,12 +131,12 @@ double calc(std::string expression) {
 		postFix.push_back(stack.top());//<-------
 		stack.pop();
 	}//end conversion into postfix
-
+	///---------------------------------------------
 	for (auto& c : postFix) {
 		std::cout << c;
 	}
 	std::cout << std::endl;
-
+	///---------------------------------------------
 	double a = 0; double b = 0; double c = 0;
 	while (!postFix.empty()) {
 		if (!std::ispunct(postFix.front().at(0))) {
