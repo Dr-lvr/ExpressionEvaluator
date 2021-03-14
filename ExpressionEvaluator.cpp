@@ -29,16 +29,14 @@ std::string manageNegativeNumbers(std::string expression) {
 	std::string stringSt;
 	std::vector<std::string> postFix;
 	for (size_t i = 0; i < exp.size(); ++i) {
-		if (std::isdigit(exp.at(i))) {
-			while (std::isdigit(exp.at(i))) {
-				stringSt += exp.at(i);
-				++i;
-				if (i == exp.size()) break;
-			}
-			if (!stringSt.empty()) {
-				postFix.push_back(stringSt);
-				stringSt.erase(stringSt.begin(), stringSt.end());
-			}
+		while (std::isdigit(exp.at(i)) || exp.at(i) == '.') {
+			stringSt += exp.at(i);
+			++i;
+			if (i == exp.size()) break;
+		}
+		if (!stringSt.empty()) {
+			postFix.push_back(stringSt);
+			stringSt.erase(stringSt.begin(), stringSt.end());
 		}
 		if (i == exp.size()) break;
 		postFix.push_back(std::string(1, exp.at(i)));
@@ -56,43 +54,42 @@ std::string manageNegativeNumbers(std::string expression) {
 					break;
 				}
 				if (std::isdigit(postFix.at(j).at(0)) && postFix.at(j).at(0) != '0') {
-					if (j < postFix.size()-1) postFix.insert(postFix.begin() + (j+1), std::string(1, ')'));
+					if (j < postFix.size() - 1) postFix.insert(postFix.begin() + (j + 1), std::string(1, ')'));
 					else postFix.push_back(std::string(1, ')'));
 					break;
 				}
 			}
 		}
 	}
+	stringSt.erase(stringSt.begin(), stringSt.end());
 	//------------------------------
+	std::cout << " qui ------>";
 	for (auto& c : postFix) {
-		std::cout << c;
+		stringSt += c;
 	}
+	std::cout << "|";
 	std::cout << std::endl;
 	//---------------------------------
-	return exp;
+	return stringSt;
 }
 double calc(std::string expression) {
 
 	std::string stringSt;
 	std::stack<std::string> stack;
 	std::deque<std::string> postFix;
-	expression = manageNegativeNumbers(expression);
 	std::unordered_map <char, int> opMap = { {'+', 1},{'-', 1},{'*', 2},{'/', 2} };
+	expression = manageNegativeNumbers(expression);
 	for (size_t i = 0; i < expression.size(); ++i) {
-		while (std::isdigit(expression.at(i))) {
+		while (std::isdigit(expression.at(i)) || expression.at(i) == '.') {
 			stringSt += expression.at(i);
 			++i;
-			if (i == expression.size()) {
-				break;
-			}
+			if (i == expression.size()) break;
 		}
 		if (!stringSt.empty()) {
 			postFix.push_back(stringSt);
 			stringSt.erase(stringSt.begin(), stringSt.end());
 		}
-		if (i == expression.size()) {
-			break;
-		}//end operand found
+		if (i == expression.size()) break;//end operand found
 		switch (expression.at(i)) {
 		case '(':
 			stack.push("(");
@@ -170,6 +167,9 @@ double calc(std::string expression) {
 	return std::stod(stack.top());
 }
 int main() {
+	std::cout << "prima operazione --- scritta correttamente ---> (0-7) * (0-(6 / 3)): " << std::endl;
+	std::cout << calc("(0-7) * (0-(6 / 3))") <<std::endl;
+	std::cout << "seconda operazione --- scritta correttamente ---> -7 * -(6 / 3)" << std::endl;
 	std::cout << calc("-7 * -(6 / 3)");
 	std::cin.ignore();
 }
