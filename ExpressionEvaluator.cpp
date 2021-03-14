@@ -1,13 +1,16 @@
 #include <stack>
 #include <string>
 #include <sstream>
+#include <ostream>
 #include <iostream>
 #include <iomanip>
 #include <unordered_map>
 
 std::string manageNegativeNumbers(std::string expression) {
 	std::string exp;
+	std::string stringSt;
 	std::stack<char> stack;
+	std::vector<std::string> inFix;
 	for (auto& c : expression) {
 		if (c == '-') {
 			if (stack.empty()) {
@@ -30,8 +33,6 @@ std::string manageNegativeNumbers(std::string expression) {
 		stack.pop();
 	}
 	std::reverse(exp.begin(), exp.end());
-	std::string stringSt;
-	std::vector<std::string> inFix;
 	for (int i = 0; i < (int)exp.size(); ++i) {
 		while (std::isdigit(exp.at(i)) || exp.at(i) == '.') {
 			stringSt += exp.at(i);
@@ -98,16 +99,14 @@ std::string manageNegativeNumbers(std::string expression) {
 	}
 	return stringSt;
 }
-long double calc(std::string expression) {
+double calc(std::string expression) {
 
-	std::unordered_map <char, int> opMap = { {'+', 1},{'-', 1},{'*', 2},{'/', 2} };
+	std::string st;
 	std::string stringSt;
+	std::stringstream streamObj;
 	std::stack<std::string> stack;
 	std::deque<std::string> postFix;
-	std::ostringstream streamObj;
-	streamObj << std::scientific;
-	streamObj << std::setprecision(10);
-
+	std::unordered_map <char, int> opMap = { {'+', 1},{'-', 1},{'*', 2},{'/', 2} };
 	expression = manageNegativeNumbers(expression);
 	for (int i = 0; i < (int)expression.size(); ++i) {
 		while (std::isdigit(expression.at(i)) || expression.at(i) == '.') {
@@ -162,22 +161,21 @@ long double calc(std::string expression) {
 		postFix.push_back(stack.top());
 		stack.pop();
 	}
-	long double a = 0; long double b = 0; long double c = 0;
+	long double a, b, c;
+	a = b = c = 0;
 	while (!postFix.empty()) {
 		if (!std::ispunct(postFix.front().at(0))) {
 			stack.push(postFix.front());
 		}
 		else {
-
-			streamObj << std::scientific << stack.top();
+			streamObj << std::setprecision(std::numeric_limits<long double>::max_digits10) << stack.top();
 			stack.pop();
-			a = std::stold(streamObj.str());
-			streamObj.str("");
-			streamObj << std::scientific << stack.top();
+			streamObj >> a;
+			streamObj.clear();
+			streamObj << std::setprecision(std::numeric_limits<long double>::max_digits10) << stack.top();
 			stack.pop();
-			b = std::stold(streamObj.str());
-			streamObj.str("");
-
+			streamObj >> b;
+			streamObj.clear();
 			switch (postFix.front().at(0)) {
 			case '+':
 				c = b + a;
@@ -194,19 +192,22 @@ long double calc(std::string expression) {
 			default:
 				break;
 			}
-			streamObj << c;
-			stack.push(streamObj.str());
-			streamObj.str("");
+			streamObj << std::setprecision(std::numeric_limits<long double>::max_digits10) << c;
+			streamObj >> st;
+			stack.push(st);
+			streamObj.clear();
 		}
 		postFix.pop_front();
 	}
-	streamObj << std::scientific << stack.top();
-	c = stold(streamObj.str());
+	streamObj << std::setprecision(std::numeric_limits<long double>::max_digits10) << stack.top();
+	streamObj >> c;
 	return c;
 }
 int main() {
 
-	std::cout << calc("(91.62+81.06*67.01)*-80.36*17.78+-29.13/((96.68-47.52+((59.91)/(14.82/(72.29+53.25))-42.83)*--50.08+--27.91*44.31+-38.52-3.1*49.28*-(69.01)-6.78/(75.18/(91.89))/(-(40.03))-(-77.49-62.22))-95.66/(-8.05/(6.47))+44.43*((61.86)--43.97+91.32+34.92+86.83+95.86*87.69+(13.36/(-74.02+77.65))+(60.97)/((42.12)+74.91))*4.4+29.84/(47.06))") << std::endl;
+	std::cout << std::setprecision(std::numeric_limits<long double>::max_digits10)<< 
+		calc("(91.62+81.06*67.01)*-80.36*17.78+-29.13/((96.68-47.52+((59.91)/(14.82/(72.29+53.25))-42.83)*--50.08+--27.91*44.31+-38.52-3.1*49.28*-(69.01)-6.78/(75.18/(91.89))/(-(40.03))-(-77.49-62.22))-95.66/(-8.05/(6.47))+44.43*((61.86)--43.97+91.32+34.92+86.83+95.86*87.69+(13.36/(-74.02+77.65))+(60.97)/((42.12)+74.91))*4.4+29.84/(47.06))") << std::endl;
+	//std::cout << calc("(91.62+81.06*67.01)*-80.36*17.78+-29.13/((96.68-47.52+((59.91)/(14.82/(72.29+53.25))-42.83)*--50.08+--27.91*44.31+-38.52-3.1*49.28*-(69.01)-6.78/(75.18/(91.89))/(-(40.03))-(-77.49-62.22))-95.66/(-8.05/(6.47))+44.43*((61.86)--43.97+91.32+34.92+86.83+95.86*87.69+(13.36/(-74.02+77.65))+(60.97)/((42.12)+74.91))*4.4+29.84/(47.06))") << std::endl;
 	/*
 	std::cout << "prima operazione --- scritta correttamente ---> (0-7) * (0-(6 / 3)): " << std::endl;
 	std::cout << calc("(0-7) * (0-(6 / 3))") <<std::endl;
