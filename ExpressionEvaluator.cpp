@@ -11,21 +11,33 @@ std::string manageNegativeNumbers(std::string expression) {
 	std::string stringSt;
 	std::stack<char> stack;
 	std::vector<std::string> inFix;
-	for (auto& c : expression) {
-		if (c == '-') {
+	for (int i = 0; i < (int)expression.size(); ++i) {
+		if (expression.at(i) == '-') {
 			if (stack.empty()) {
 				stack.push(' ');
 				stack.push('0');
 			}
 			else {
-				if (std::ispunct(stack.top())) {
+				switch (stack.top()) {
+				case '+':case '-':case '*':case '/':
 					stack.push(' ');
 					stack.push('0');
+					break;
+				case ')':case '(':
+					if (expression.at(i + 2) != '(') {
+						stack.push(' ');
+						stack.push('0');
+						break;
+					}
+					break;
+				default:
+					break;
 				}
+
 			}
 		}
-		if (c != ' ') {
-			stack.push(c);
+		if (expression.at(i) != ' ') {
+			stack.push(expression.at(i));
 		}
 	}
 	while (!stack.empty()) {
@@ -97,6 +109,10 @@ std::string manageNegativeNumbers(std::string expression) {
 	for (auto& c : inFix) {
 		stringSt += c;
 	}
+	for (auto& c : inFix) {
+		std::cout << c;
+	}
+	std::cout << std::endl;
 	return stringSt;
 }
 double calc(std::string expression) {
@@ -219,7 +235,7 @@ int main() {
 
 	std::cout
 		<< std::setprecision(std::numeric_limits<double>::max_digits10)
-		<< calc("-(-6) * (-41 + -41 / (45)) - (58 + -((((16 - 42)))) + -34)");
+		<< calc("(26) - (-25 / -25 + (35)) - (-30 * -(((-(16 + -39)))) + -54)");
 	//std::cout << std::setprecision(std::numeric_limits<double>::max_digits10)<< 
 		//calc("(91.62+81.06*67.01)*-80.36*17.78+-29.13/((96.68-47.52+((59.91)/(14.82/(72.29+53.25))-42.83)*--50.08+--27.91*44.31+-38.52-3.1*49.28*-(69.01)-6.78/(75.18/(91.89))/(-(40.03))-(-77.49-62.22))-95.66/(-8.05/(6.47))+44.43*((61.86)--43.97+91.32+34.92+86.83+95.86*87.69+(13.36/(-74.02+77.65))+(60.97)/((42.12)+74.91))*4.4+29.84/(47.06))") << std::endl;
 	//std::cout << calc("(91.62+81.06*67.01)*-80.36*17.78+-29.13/((96.68-47.52+((59.91)/(14.82/(72.29+53.25))-42.83)*--50.08+--27.91*44.31+-38.52-3.1*49.28*-(69.01)-6.78/(75.18/(91.89))/(-(40.03))-(-77.49-62.22))-95.66/(-8.05/(6.47))+44.43*((61.86)--43.97+91.32+34.92+86.83+95.86*87.69+(13.36/(-74.02+77.65))+(60.97)/((42.12)+74.91))*4.4+29.84/(47.06))") << std::endl;
