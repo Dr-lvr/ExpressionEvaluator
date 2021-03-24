@@ -1,185 +1,217 @@
 #include <stack>
 #include <string>
-#include <iostream>
-#include <sstream>
 #include <iomanip>
+#include <sstream>
+#include <ostream>
 #include <unordered_map>
+#include <iostream>
 
 std::string manageNegativeNumbers(std::string expression) {
-	std::string exp;
-	std::stack<char> stack;
-	for (auto& c : expression) {
-		if (c == '-') {
-			if (stack.empty()) {
-				stack.push(' ');
-				stack.push('0');
-			}
-			else {
-				if (std::ispunct(stack.top())) {
-					stack.push(' ');
-					stack.push('0');
-				}
-			}
-		}
-		if (c != ' ') {
-			stack.push(c);
-		}
-	}
-	while (!stack.empty()) {
-		exp.push_back(stack.top());
-		stack.pop();
-	}
-	std::reverse(exp.begin(), exp.end());
-	std::string stringSt;
-	std::vector<std::string> inFix;
-	for (int i = 0; i < (int)exp.size(); ++i) {
-		while (std::isdigit(exp.at(i)) || exp.at(i) == '.') {
-			stringSt += exp.at(i);
-			++i;
-			if (i == (int)exp.size()) {
-				break;
-			}
-		}
-		if (!stringSt.empty()) {
-			inFix.push_back(stringSt);
-			stringSt.erase(stringSt.begin(), stringSt.end());
-		}
-		if (i == (int)exp.size()) {
-			break;
-		}
-		inFix.push_back(std::string(1, exp.at(i)));
-	}
-	for (int i = 0; i < (int)inFix.size(); ++i) {
-		if (inFix.at(i) == " ") {
-			inFix.at(i) = "(";
-			for (int j = i + 1; j < (int)inFix.size(); ++j) {
-				if (inFix.at(j).at(0) == '(') {
-					while (inFix.at(j).at(0) != ')') {
-						++j;
-					}
-					if (j < (int)inFix.size() - 1) {
-						inFix.insert((inFix.begin() + (j + 1)), std::string(1, ')'));
-					}
-					else {
-						inFix.push_back(std::string(1, ')'));
-					}
-					break;
-				}
-				if (std::isdigit(inFix.at(j).at(0)) && inFix.at(j).at(0) != '0') {
-					if (j < (int)inFix.size() - 1) {
-						inFix.insert((inFix.begin() + (j + 1)), std::string(1, ')'));
-					}
-					else {
-						inFix.push_back(std::string(1, ')'));
-					}
-					break;
-				}
-			}
-		}
-	}
-	stringSt.erase(stringSt.begin(), stringSt.end());
-	for (auto& c : inFix) {
-		stringSt += c;
-	}
-	return stringSt;
+
+    std::string f_pivotString;
+    std::string s_pivotString;
+    std::stack<char> firstStack;
+    std::stack<std::string> secondStack;
+    std::vector<std::string> infix_expressionVec;
+    for (int i = 0; i < (int)expression.size(); ++i) {
+        if (expression.at(i) == '-') {
+            if (firstStack.empty()) {
+                firstStack.push(' ');
+                firstStack.push('0');
+            }
+            else {
+                switch (firstStack.top()) {
+                case '+':case '-':case '*':case '/':
+                    firstStack.push(' ');
+                    firstStack.push('0');
+                    break;
+                case ')':case '(':
+                    if (expression.at(i + 2) != '(') {
+                        firstStack.push(' ');
+                        firstStack.push('0');
+                        break;
+                    }
+                    break;
+                default:
+                    break;
+                }
+
+            }
+        }
+        if (expression.at(i) != ' ') {
+            firstStack.push(expression.at(i));
+        }
+    }
+    while (!firstStack.empty()) {
+        s_pivotString.push_back(firstStack.top());
+        firstStack.pop();
+    }
+    std::reverse(s_pivotString.begin(), s_pivotString.end());
+    for (int i = 0; i < (int)s_pivotString.size(); ++i) {
+        while (std::isdigit(s_pivotString.at(i)) || s_pivotString.at(i) == '.') {
+            f_pivotString += s_pivotString.at(i);
+            ++i;
+            if (i == (int)s_pivotString.size()) {
+                break;
+            }
+        }
+        if (!f_pivotString.empty()) {
+            infix_expressionVec.push_back(f_pivotString);
+            f_pivotString.erase(f_pivotString.begin(), f_pivotString.end());
+        }
+        if (i == (int)s_pivotString.size()) {
+            break;
+        }
+        infix_expressionVec.push_back(std::string(1, s_pivotString.at(i)));
+    }
+    for (int i = 0; i < (int)infix_expressionVec.size(); ++i) {
+        if (infix_expressionVec.at(i) == " ") {
+            infix_expressionVec.at(i) = "(";
+            for (int j = i + 1; j < (int)infix_expressionVec.size(); ++j) {
+                if (infix_expressionVec.at(j).at(0) == '(') {
+                    while (infix_expressionVec.at(j).at(0) != ')') {
+                        ++j;
+                    }
+                    if (j < (int)infix_expressionVec.size() - 1) {
+                        infix_expressionVec.insert((infix_expressionVec.begin() + (j + 1)), std::string(1, ')'));
+                    }
+                    else {
+                        infix_expressionVec.push_back(std::string(1, ')'));
+                    }
+                    break;
+                }
+                if (std::isdigit(infix_expressionVec.at(j).at(0)) && infix_expressionVec.at(j).at(0) != '0') {
+                    if (j < (int)infix_expressionVec.size() - 1) {
+                        infix_expressionVec.insert((infix_expressionVec.begin() + (j + 1)), std::string(1, ')'));
+                    }
+                    else {
+                        infix_expressionVec.push_back(std::string(1, ')'));
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    f_pivotString.erase(f_pivotString.begin(), f_pivotString.end());
+    for (int i = 0; i < (int)infix_expressionVec.size(); ++i) {
+        if (!secondStack.empty()) {
+            if (secondStack.top() == ")" && infix_expressionVec.at(i) == "(") {
+                secondStack.push(std::string(1, '+'));
+            }
+        }
+        secondStack.push(infix_expressionVec.at(i));
+    }
+    infix_expressionVec.erase(infix_expressionVec.begin(), infix_expressionVec.end());
+    while (!secondStack.empty()) {
+        infix_expressionVec.push_back(secondStack.top());
+        secondStack.pop();
+    }
+    std::reverse(infix_expressionVec.begin(), infix_expressionVec.end());
+    for (auto& c : infix_expressionVec) {
+        f_pivotString += c;
+    }
+    return f_pivotString;
 }
 double calc(std::string expression) {
 
-	std::string stringSt;
-	std::stack<std::string> stack;
-	std::deque<std::string> postFix;
-	std::unordered_map <char, int> opMap = { {'+', 1},{'-', 1},{'*', 2},{'/', 2} };
-	std::ostringstream streamObj;
-	streamObj << std::fixed;
-	streamObj << std::setprecision(10);
-
-	expression = manageNegativeNumbers(expression);
-	for (int i = 0; i < (int) expression.size(); ++i) {
-		while (std::isdigit(expression.at(i)) || expression.at(i) == '.') {
-			stringSt += expression.at(i);
-			++i;
-			if (i == (int)expression.size()) {
-				break;
-			}
-		}
-		if (!stringSt.empty()) {
-			postFix.push_back(stringSt);
-			stringSt.erase(stringSt.begin(), stringSt.end());
-		}
-		if (i == (int)expression.size()) {
-			break;//end operand found
-		}
-		switch (expression.at(i)) {
-		case '(':
-			stack.push("(");
-			break;
-		case ')':
-			while (!stack.empty() && stack.top() != "(") {
-				postFix.push_back(stack.top());
-				stack.pop();
-			}
-			stack.pop();
-			break;
-		case '+':case '-':case '*':case '/':
-			if (stack.empty() || stack.top() == "(") {
-				if (expression.at(i) == '+') stack.push("+");
-				if (expression.at(i) == '-') stack.push("-");
-				if (expression.at(i) == '*') stack.push("*");
-				if (expression.at(i) == '/') stack.push("/");
-			}
-			else {
-				while (!stack.empty() && stack.top() != "(" &&
-					opMap[expression.at(i)] <= opMap[stack.top().at(0)]) {
-					postFix.push_back(stack.top());
-					stack.pop();
-				}
-				if (expression.at(i) == '+') stack.push("+");
-				if (expression.at(i) == '-') stack.push("-");
-				if (expression.at(i) == '*') stack.push("*");
-				if (expression.at(i) == '/') stack.push("/");
-			}
-			break;
-		default:
-			break;
-		}
-	}
-	while (!stack.empty()) {
-		postFix.push_back(stack.top());//<-------
-		stack.pop();
-	}//end conversion into postfix
-	long double a = 0; long double b = 0; long double c = 0;
-	while (!postFix.empty()) {
-		if (!std::ispunct(postFix.front().at(0))) {
-			stack.push(postFix.front());
-		}
-		else {
-			a = std::stold(stack.top());
-			stack.pop();
-			b = std::stold(stack.top());
-			stack.pop();
-			switch (postFix.front().at(0)) {
-			case '+':
-				c = b + a;
-				break;
-			case '-':
-				c = b - a;
-				break;
-			case '*':
-				c = b * a;
-				break;
-			case '/':
-				c = b / a;
-				break;
-			default:
-				break;
-			}
-			streamObj << c;
-			stack.push(streamObj.str());
-			streamObj.str("");
-		}
-		postFix.pop_front();
-	}
-	return std::stod(stack.top());
+    std::cout << expression << std::endl;
+    std::string s_pivotString;
+    std::string f_pivotString;
+    std::stringstream streamObj;
+    std::stack<std::string> stack;
+    std::deque<std::string> postfix_expressionDeque;
+    std::unordered_map <char, int> operands_vMap = { {'+', 1},{'-', 1},{'*', 2},{'/', 2} };
+    std::unordered_map <char, std::string> op_ch_toS_Map = { {'+', "+"},{'-', "-"},{'*', "*"},{'/', "/"} };
+    expression = manageNegativeNumbers(expression);
+    for (int i = 0; i < (int)expression.size(); ++i) {
+        while (std::isdigit(expression.at(i)) || expression.at(i) == '.') {
+            f_pivotString += expression.at(i);
+            ++i;
+            if (i == (int)expression.size()) {
+                break;
+            }
+        }
+        if (!f_pivotString.empty()) {
+            postfix_expressionDeque.push_back(f_pivotString);
+            f_pivotString.erase(f_pivotString.begin(), f_pivotString.end());
+        }
+        if (i == (int)expression.size()) {
+            break;//end operand found
+        }
+        switch (expression.at(i)) {
+        case '(':stack.push("("); break;
+        case ')':
+            while (!stack.empty() && stack.top() != "(") {
+                postfix_expressionDeque.push_back(stack.top());
+                stack.pop();
+            }
+            stack.pop();
+            break;
+        case '+':case '-':case '*':case '/':
+            if (stack.empty() || stack.top() == "(") {
+                stack.push(op_ch_toS_Map[expression.at(i)]);
+            }
+            else {
+                while (!stack.empty() && stack.top() != "(" &&
+                    operands_vMap[expression.at(i)] <= operands_vMap[stack.top().at(0)]) {
+                    postfix_expressionDeque.push_back(stack.top());
+                    stack.pop();
+                }
+                stack.push(op_ch_toS_Map[expression.at(i)]);
+            }
+            break;
+        default:
+            break;
+        }
+    }
+    while (!stack.empty()) {
+        postfix_expressionDeque.push_back(stack.top());
+        stack.pop();
+    }
+    double a, b, c;
+    a = b = c = 0;
+    while (!postfix_expressionDeque.empty()) {
+        if (!std::ispunct(postfix_expressionDeque.front().at(0))) {
+            stack.push(postfix_expressionDeque.front());
+        }
+        else {
+            streamObj
+                << std::scientific
+                << std::setprecision(std::numeric_limits<long double>::digits10)
+                << stack.top();
+            stack.pop();
+            streamObj >> a;
+            streamObj.clear();
+            streamObj
+                << std::scientific
+                << std::setprecision(std::numeric_limits<long double>::digits10)
+                << stack.top();
+            stack.pop();
+            streamObj >> b;
+            streamObj.clear();
+            switch (postfix_expressionDeque.front().at(0)) {
+            case '+':c = b + a; break;
+            case '-':c = b - a; break;
+            case '*':c = b * a; break;
+            case '/':c = b / a; break;
+            default: break;
+            }
+            streamObj
+                << std::scientific
+                << std::setprecision(std::numeric_limits<long double>::digits10)
+                << c;
+            streamObj >> s_pivotString;
+            stack.push(s_pivotString);
+            streamObj.clear();
+        }
+        postfix_expressionDeque.pop_front();
+    }
+    streamObj
+        << std::scientific
+        << std::setprecision(std::numeric_limits<long double>::max_digits10)
+        << stack.top();
+    streamObj >> c;
+    return c;
 }
 int main() {
 	std::cout << "prima operazione --- scritta correttamente ---> (0-7) * (0-(6 / 3)): " << std::endl;
